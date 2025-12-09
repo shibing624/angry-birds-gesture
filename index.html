@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angry Birds - Gesture Control</title>
+    <link rel="icon" href="assets/red_bird_left.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 游戏主画布 -->
+    <canvas id="game-canvas"></canvas>
+    
+    <!-- 摄像头区域（右下角） -->
+    <div id="camera-container">
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="hand-overlay"></canvas>
+        <div class="camera-frame">
+            <div class="frame-corner tl"></div>
+            <div class="frame-corner tr"></div>
+            <div class="frame-corner bl"></div>
+            <div class="frame-corner br"></div>
+        </div>
+        <div class="camera-label">GESTURE CONTROL</div>
+    </div>
+
+    <!-- 游戏 HUD -->
+    <div id="game-hud">
+        <div class="hud-item">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-value" id="score">0</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">LEVEL</span>
+            <span class="hud-value" id="level">1</span>
+        </div>
+        <div class="hud-item hud-birds">
+            <span class="hud-label"><img src="assets/red_bird_left.png" class="hud-bird-icon" alt="bird"> BIRDS LEFT</span>
+            <span class="hud-value hud-birds-value" id="birds-left">5</span>
+        </div>
+    </div>
+
+    <!-- 左下角大型剩余小鸟显示 -->
+    <div id="birds-display">
+        <div class="birds-icon"><img src="assets/red_bird_left.png" alt="bird" class="birds-icon-img"></div>
+        <div class="birds-count" id="birds-count-large">5</div>
+        <div class="birds-label">剩余小鸟</div>
+    </div>
+
+    <!-- 手势状态显示 -->
+    <div id="gesture-status">
+        <div class="status-item">
+            <span class="status-icon" id="hand-icon">✋</span>
+            <span class="status-text" id="gesture-text">等待手势...</span>
+        </div>
+        <div class="power-bar">
+            <div class="power-label">POWER</div>
+            <div class="power-track">
+                <div class="power-fill" id="power-fill"></div>
+            </div>
+            <div class="power-value" id="power-value">0%</div>
+        </div>
+    </div>
+
+    <!-- 游戏控制按钮 -->
+    <div id="game-controls">
+        <button id="restart-btn" class="game-btn hidden">
+            <span class="btn-icon">↺</span>
+            <span class="btn-text">RESTART</span>
+        </button>
+        <button id="next-btn" class="game-btn hidden">
+            <span class="btn-icon">→</span>
+            <span class="btn-text">NEXT LEVEL</span>
+        </button>
+    </div>
+
+    <!-- 游戏提示 -->
+    <div id="game-tips">
+        <div class="tip-title">HOW TO PLAY</div>
+        <div class="tip-content">
+            <p>1. 用拇指和食指捏合选中小鸟</p>
+            <p>2. 向右拉动手指增加力量</p>
+            <p>3. 松开手指向左发射小鸟</p>
+            <p>4. 消灭所有小猪过关！</p>
+        </div>
+    </div>
+
+    <!-- 游戏结束/胜利弹窗 -->
+    <div id="game-modal" class="hidden">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">LEVEL COMPLETE!</div>
+            <div class="modal-score">
+                <span>Score: </span>
+                <span id="modal-score">0</span>
+            </div>
+        <div class="modal-stars" id="modal-stars">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+        </div>
+        <div class="modal-buttons">
+            <button id="retry-btn" class="modal-btn">
+                <span class="btn-icon">↺</span>
+                <span>RETRY</span>
+            </button>
+            <button id="modal-next-btn" class="modal-btn hidden">
+                <span class="btn-icon">→</span>
+                <span>NEXT LEVEL</span>
+            </button>
+        </div>
+        <div class="modal-hint" id="modal-hint">按 Space 键继续</div>
+        </div>
+    </div>
+
+    <!-- 加载屏幕 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-bird"><img src="assets/red_bird_left.png" alt="bird" class="loading-bird-img"></div>
+            <div class="loading-text">ANGRY BIRDS</div>
+            <div class="loading-subtitle">GESTURE EDITION</div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="load-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

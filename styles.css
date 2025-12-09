@@ -1,0 +1,772 @@
+/* 基础重置和变量 */
+:root {
+    --primary-color: #ff6b35;
+    --secondary-color: #f7c948;
+    --accent-color: #00d4ff;
+    --success-color: #00ff88;
+    --danger-color: #ff4444;
+    --bg-dark: rgba(20, 30, 40, 0.9);
+    --bg-darker: rgba(10, 15, 20, 0.95);
+    --text-glow: 0 0 10px var(--primary-color);
+    --border-glow: 0 0 10px var(--accent-color), 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: linear-gradient(180deg, #1a2a3a 0%, #0d1520 100%);
+    font-family: 'Courier New', 'Consolas', monospace;
+    color: #fff;
+}
+
+/* 游戏画布 */
+#game-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* 摄像头容器 - 右下角 */
+#camera-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 280px;
+    height: 210px;
+    z-index: 100;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: var(--border-glow);
+}
+
+#camera {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    opacity: 0.5;
+}
+
+#camera.hidden {
+    display: none;
+}
+
+#hand-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* 摄像头边框装饰 */
+.camera-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.frame-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--accent-color);
+    border-style: solid;
+}
+
+.frame-corner.tl { top: 5px; left: 5px; border-width: 2px 0 0 2px; }
+.frame-corner.tr { top: 5px; right: 5px; border-width: 2px 2px 0 0; }
+.frame-corner.bl { bottom: 5px; left: 5px; border-width: 0 0 2px 2px; }
+.frame-corner.br { bottom: 5px; right: 5px; border-width: 0 2px 2px 0; }
+
+.camera-label {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 10px;
+    border-radius: 3px;
+}
+
+/* 游戏 HUD */
+#game-hud {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    z-index: 50;
+    padding: 15px 40px;
+    background: var(--bg-dark);
+    border: 1px solid var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+.hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.hud-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.hud-bird-icon {
+    width: 16px;
+    height: auto;
+    vertical-align: middle;
+}
+
+.hud-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: var(--text-glow);
+}
+
+/* 小鸟数量高亮 */
+.hud-birds {
+    background: rgba(255, 68, 68, 0.2);
+    padding: 5px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--danger-color);
+}
+
+.hud-birds-value {
+    color: var(--danger-color) !important;
+    font-size: 32px !important;
+    animation: birdPulse 1s infinite;
+}
+
+@keyframes birdPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* 左下角大型小鸟显示 */
+#birds-display {
+    position: fixed;
+    left: 20px;
+    bottom: 250px;
+    z-index: 50;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, rgba(255, 68, 68, 0.3), rgba(255, 107, 53, 0.2));
+    border: 2px solid var(--danger-color);
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255, 68, 68, 0.4);
+}
+
+#birds-display .birds-icon {
+    font-size: 40px;
+    margin-bottom: 5px;
+    animation: bounce 1s infinite;
+}
+
+#birds-display .birds-icon-img {
+    width: 50px;
+    height: auto;
+}
+
+#birds-display .birds-count {
+    font-size: 48px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 20px var(--danger-color), 0 0 40px rgba(255, 68, 68, 0.5);
+}
+
+#birds-display .birds-label {
+    font-size: 12px;
+    color: var(--secondary-color);
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+/* 手势状态显示 */
+#gesture-status {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 200px;
+    z-index: 50;
+    padding: 15px;
+    background: var(--bg-dark);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.status-icon {
+    font-size: 24px;
+    animation: pulse 1.5s infinite;
+}
+
+.status-text {
+    font-size: 12px;
+    color: var(--accent-color);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* 力量条 */
+.power-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.power-label {
+    font-size: 10px;
+    color: var(--secondary-color);
+    width: 45px;
+}
+
+.power-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.power-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--success-color), var(--secondary-color), var(--danger-color));
+    border-radius: 4px;
+    transition: width 0.1s ease;
+    box-shadow: 0 0 10px var(--secondary-color);
+}
+
+.power-value {
+    font-size: 12px;
+    width: 35px;
+    text-align: right;
+    color: var(--secondary-color);
+}
+
+/* 游戏控制按钮 */
+#game-controls {
+    position: fixed;
+    top: 20px;
+    right: 320px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    z-index: 60;
+}
+
+.game-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--bg-dark);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.game-btn:hover {
+    background: rgba(255, 107, 53, 0.2);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+    transform: scale(1.05);
+}
+
+.game-btn.hidden {
+    display: none;
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+/* 游戏提示 */
+#game-tips {
+    position: fixed;
+    left: 20px;
+    top: 80px;
+    width: 220px;
+    z-index: 40;
+    padding: 20px;
+    background: var(--bg-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.tip-title {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tip-content p {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* 游戏弹窗 */
+#game-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#game-modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--bg-darker);
+    border: 2px solid var(--primary-color);
+    border-radius: 20px;
+    padding: 40px 60px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(255, 107, 53, 0.5);
+}
+
+.modal-title {
+    font-size: 32px;
+    letter-spacing: 5px;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    text-shadow: var(--text-glow);
+}
+
+.modal-score {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.modal-stars {
+    font-size: 40px;
+}
+
+.modal-stars .star {
+    color: #333;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.modal-stars .star.active {
+    color: var(--secondary-color);
+    text-shadow: 0 0 20px var(--secondary-color);
+}
+
+/* 弹窗按钮 */
+.modal-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.modal-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 30px;
+    background: var(--bg-dark);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+    background: rgba(255, 107, 53, 0.2);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+    transform: scale(1.05);
+}
+
+.modal-btn.hidden {
+    display: none;
+}
+
+/* 弹窗Space键提示 */
+.modal-hint {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    opacity: 0.8;
+    animation: hintPulse 1.5s infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* 加载屏幕 */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-darker);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-bird {
+    font-size: 80px;
+    animation: bounce 1s infinite;
+}
+
+.loading-bird-img {
+    width: 80px;
+    height: auto;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.loading-text {
+    font-size: 36px;
+    letter-spacing: 8px;
+    color: var(--primary-color);
+    margin-top: 20px;
+    text-shadow: var(--text-glow);
+}
+
+.loading-subtitle {
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: var(--accent-color);
+    margin-top: 10px;
+}
+
+.loading-progress {
+    width: 250px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    margin: 30px auto 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* 响应式 - 平板 */
+@media (max-width: 768px) {
+    #camera-container {
+        width: 200px;
+        height: 150px;
+        right: 10px;
+        bottom: 10px;
+    }
+    
+    #game-hud {
+        gap: 20px;
+        padding: 10px 20px;
+    }
+    
+    .hud-value {
+        font-size: 20px;
+    }
+    
+    #game-tips {
+        display: none;
+    }
+    
+    #gesture-status {
+        left: 10px;
+        bottom: 170px;
+        width: 180px;
+    }
+    
+    #birds-display {
+        left: 10px;
+        bottom: 180px;
+        padding: 10px 15px;
+    }
+    
+    #birds-display .birds-icon-img {
+        width: 35px;
+    }
+    
+    #birds-display .birds-count {
+        font-size: 36px;
+    }
+    
+    #game-controls {
+        right: 220px;
+    }
+}
+
+/* 响应式 - 手机 */
+@media (max-width: 480px) {
+    #camera-container {
+        width: 140px;
+        height: 105px;
+        right: 5px;
+        bottom: 5px;
+    }
+    
+    .camera-label {
+        font-size: 8px;
+        padding: 1px 6px;
+    }
+    
+    #game-hud {
+        gap: 10px;
+        padding: 8px 15px;
+        top: 10px;
+    }
+    
+    .hud-label {
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+    
+    .hud-value {
+        font-size: 16px;
+    }
+    
+    .hud-bird-icon {
+        width: 12px;
+    }
+    
+    .hud-birds {
+        padding: 3px 8px;
+    }
+    
+    .hud-birds-value {
+        font-size: 20px !important;
+    }
+    
+    #birds-display {
+        left: 5px;
+        bottom: 120px;
+        padding: 8px 12px;
+        border-radius: 10px;
+    }
+    
+    #birds-display .birds-icon-img {
+        width: 28px;
+    }
+    
+    #birds-display .birds-count {
+        font-size: 28px;
+    }
+    
+    #birds-display .birds-label {
+        font-size: 10px;
+    }
+    
+    #gesture-status {
+        left: 5px;
+        bottom: 5px;
+        width: 150px;
+        padding: 10px;
+    }
+    
+    .status-icon {
+        font-size: 18px;
+    }
+    
+    .status-text {
+        font-size: 10px;
+    }
+    
+    .power-label {
+        font-size: 8px;
+        width: 35px;
+    }
+    
+    .power-value {
+        font-size: 10px;
+        width: 30px;
+    }
+    
+    #game-controls {
+        top: 10px;
+        right: 150px;
+        gap: 5px;
+    }
+    
+    .game-btn {
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+    
+    .btn-icon {
+        font-size: 12px;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .modal-content {
+        padding: 25px 30px;
+        margin: 10px;
+        border-radius: 15px;
+    }
+    
+    .modal-title {
+        font-size: 22px;
+        letter-spacing: 3px;
+    }
+    
+    .modal-score {
+        font-size: 18px;
+    }
+    
+    .modal-stars {
+        font-size: 30px;
+    }
+    
+    .modal-buttons {
+        gap: 10px;
+    }
+    
+    .modal-btn {
+        padding: 10px 20px;
+        font-size: 12px;
+    }
+    
+    .loading-bird-img {
+        width: 60px;
+    }
+    
+    .loading-text {
+        font-size: 24px;
+        letter-spacing: 4px;
+    }
+    
+    .loading-subtitle {
+        font-size: 12px;
+    }
+    
+    .loading-progress {
+        width: 180px;
+    }
+}
+
+/* 触控设备优化 */
+@media (pointer: coarse) {
+    .game-btn, .modal-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    #camera-container {
+        touch-action: none;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+    #game-hud {
+        top: 5px;
+        padding: 5px 15px;
+    }
+    
+    .hud-value {
+        font-size: 18px;
+    }
+    
+    #birds-display {
+        bottom: 60px;
+        padding: 5px 10px;
+    }
+    
+    #birds-display .birds-count {
+        font-size: 24px;
+    }
+    
+    #gesture-status {
+        bottom: 5px;
+        padding: 8px;
+    }
+    
+    #camera-container {
+        width: 160px;
+        height: 120px;
+    }
+}

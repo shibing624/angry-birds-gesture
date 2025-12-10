@@ -16,7 +16,7 @@
 https://angrybirds.mulanai.com
 
 
-![][https://github.com/shibing624/angry-birds-gesture/blob/main/assets/snap-1.png]
+![](https://github.com/shibing624/angry-birds-gesture/blob/main/assets/snap-1.png)
 
 ## 操作说明
 

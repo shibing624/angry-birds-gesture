@@ -15,6 +15,9 @@
 
 https://angrybirds.mulanai.com
 
+
+![snap][https://github.com/shibing624/angry-birds-gesture/blob/main/assets/snap.png]
+
 ## 操作说明
 
 ### 手势控制（需摄像头）
@@ -99,6 +102,17 @@ angry-birds-gesture/
 │   └── cloud.png
 └── README.md     # 说明文档
 ```
+
+## 联系方式
+
+- **GitHub Issues**: [报告问题或功能请求](https://github.com/shibing624/angry-birds-gesture/issues)
+- **邮箱**: xuming624@qq.com
+- **微信**: xuming624（备注：姓名-公司-NLP）
+
+<p align="center">
+  <img src="https://github.com/shibing624/WebResearcher/blob/main/docs/wechat.jpeg" width="200" />
+</p>
+
 
 ## License
 
